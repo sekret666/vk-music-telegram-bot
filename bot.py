@@ -303,7 +303,7 @@ async def select_sound(call: types.CallbackQuery):
     f = lambda A, n=int(users[str(call.from_user.id)]['results_count']): [A[i:i+n] for i in range(0, len(A), n)]
     cut_playlist = f(playlist)
 
-    keyb = Keyboards().like_unlike_keyboard()
+    keyb = Keyboards().like_unlike_keyboard(users[str(call.from_user.id)]["hearts_buttons"])
     for val in cut_playlist[page][song_num].values():
         await bot.send_audio(call.message.chat.id, audio=val, reply_markup=keyb)
 
