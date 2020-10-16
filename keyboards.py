@@ -22,11 +22,9 @@ class Keyboards:
         button_num = 1
         
         for item in list_page:
-            print(item)
             buttons.append(types.InlineKeyboardButton(text=str(button_num), callback_data=f"select_{button_num}_{self.user_id}"))
             button_num+=1
 
-        print(len(buttons))
         rows = {
             6:6,
             8:4,
@@ -203,7 +201,7 @@ class Keyboards:
         keyboards['lang_buttons'] = types.InlineKeyboardMarkup(row_width=3)
 
         ru_button = types.InlineKeyboardButton(text="Русский🇷🇺", callback_data=f"select_ru")
-        en_button = types.InlineKeyboardButton(text="English🏴󠁧󠁢󠁥󠁮󠁧󠁿", callback_data=f"select_en")
+        en_button = types.InlineKeyboardButton(text="English🇬🇧", callback_data=f"select_en")
         es_button = types.InlineKeyboardButton(text="España🇪🇸", callback_data=f"select_es")
 
         keyboards['lang_buttons'].row(ru_button, en_button, es_button)
@@ -215,7 +213,6 @@ class Keyboards:
         self.count = count
         self.button_status = button_status
 
-        print(self.lang, self.count, self.button_status)
 
         keyboards['settings'] = types.InlineKeyboardMarkup()
 

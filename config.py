@@ -1,3 +1,3 @@
-API_TOKEN = "1315631038:AAFFJlioC3eCllEiP4mN_jkg7HaqaTaPKGU"
+API_TOKEN = "1321534486:AAEUTubYcVLSJyU8gS__Z0-haG-dEKR2etw"
 
 commands = ['/start', '/song', '/artist', '/setlang', '/settings', '/my']
