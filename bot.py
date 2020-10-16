@@ -137,7 +137,7 @@ async def select_sound(call: types.CallbackQuery):
     song = downloader.SongsDownloader().download_song(users[str(call.from_user.id)]["urls"][page][song_num])
 
     keyb = Keyboards().like_unlike_keyboard(users[str(call.from_user.id)]["hearts_buttons"])
-    msg = await bot.send_audio(call.message.chat.id, song, title=f"{name} - {song_name}", performer=song_name, caption="@DBAS_music_bot" ,reply_markup=keyb)
+    msg = await bot.send_audio(call.message.chat.id, song, title=f"{name} - {song_name}", performer=song_name, caption="🎧DBAS Music" ,reply_markup=keyb)
 
 
 @dp.callback_query_handler(lambda call: call.data in ["like", "unlike"])
@@ -304,7 +304,7 @@ async def select_sound(call: types.CallbackQuery):
     cut_playlist = f(playlist)
     keyb = Keyboards().like_unlike_keyboard(users[str(call.from_user.id)]["hearts_buttons"])
     for val in cut_playlist[page][song_num].values():
-        await bot.send_audio(call.message.chat.id, audio=val, caption="@DBAS_music_bot", reply_markup=keyb)
+        await bot.send_audio(call.message.chat.id, audio=val, caption="🎧DBAS Music", reply_markup=keyb)
 
 
 def update_users_write():
