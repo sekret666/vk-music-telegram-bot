@@ -12,7 +12,7 @@ class Keyboards:
     def __init__(self, keyboards=keyboards):
 
         self.keyboards = keyboards
-    
+
     def for_songs_list(self, list_page, user_id, count):
         self.list_page = list_page
         self.user_id = user_id
@@ -20,7 +20,7 @@ class Keyboards:
 
         buttons = []
         button_num = 1
-        
+
         for item in list_page:
             buttons.append(types.InlineKeyboardButton(text=str(button_num), callback_data=f"select_{button_num}_{self.user_id}"))
             button_num+=1
@@ -30,7 +30,7 @@ class Keyboards:
             8:4,
             10:5
         }
-        
+
         try:
             keyboards[f"song_select_{self.user_id}"] = types.InlineKeyboardMarkup(row_width=rows[len(buttons)])
         except KeyError:
@@ -39,7 +39,7 @@ class Keyboards:
 
         if not list_page:
             return False
-        
+
         elif len(buttons) == 1:
             keyboards[f"song_select_{self.user_id}"].add(
                 buttons[0])
@@ -48,12 +48,12 @@ class Keyboards:
         elif len(buttons) == 2:
             keyboards[f"song_select_{self.user_id}"].add(
                 buttons[0], buttons[1])
-        
-        
+
+
         elif len(buttons) == 3:
             keyboards[f"song_select_{self.user_id}"].add(
                 buttons[0], buttons[1], buttons[2])
-        
+
         elif len(buttons) == 4:
             keyboards[f"song_select_{self.user_id}"].add(
                 buttons[0], buttons[1], buttons[2],
@@ -68,7 +68,7 @@ class Keyboards:
             keyboards[f"song_select_{self.user_id}"].add(
                 buttons[0], buttons[1], buttons[2],
                 buttons[3], buttons[4], buttons[5])
-        
+
         elif len(buttons) == 7:
             keyboards[f"song_select_{self.user_id}"].add(
                 buttons[0], buttons[1], buttons[2],
@@ -85,26 +85,26 @@ class Keyboards:
                 buttons[4], buttons[5], buttons[6], buttons[7])
 
         elif len(buttons) == 10:
-        
+
             keyboards[f"song_select_{self.user_id}"].add(
                 buttons[0], buttons[1], buttons[2], buttons[3],buttons[4],
                 buttons[5], buttons[6], buttons[7], buttons[8], buttons[9])
 
-            
+
         to_left = types.InlineKeyboardButton(text="⬅️", callback_data=f"to_left")
         close = types.InlineKeyboardButton(text="❌", callback_data=f"close")
         to_right = types.InlineKeyboardButton(text="➡️", callback_data=f"to_right")
         keyboards[f"song_select_{self.user_id}"].row(to_left, close, to_right)
-        
+
         return keyboards[f"song_select_{self.user_id}"]
-    
+
     def like_unlike_keyboard(self, status):
         self.status = status
         if self.status == "On":
             like = types.InlineKeyboardButton(text="❤️", callback_data="like")
             close = types.InlineKeyboardButton(text="❌", callback_data=f"close")
             unlike = types.InlineKeyboardButton(text="💔", callback_data="unlike")
-            
+
             keyboards["likeunlike"] = types.InlineKeyboardMarkup(row_width=3)
             keyboards[f"likeunlike"].row(like, close, unlike)
 
@@ -122,7 +122,7 @@ class Keyboards:
 
         buttons = []
         button_num = 1
-        
+
         for item in list_page:
             buttons.append(types.InlineKeyboardButton(text=str(button_num), callback_data=f"playlist_{button_num}_{self.user_id}"))
             button_num+=1
@@ -132,7 +132,7 @@ class Keyboards:
             8:4,
             10:5
         }
-        
+
         try:
             keyboards[f"playlist_{self.user_id}"] = types.InlineKeyboardMarkup(row_width=rows[len(buttons)])
         except KeyError:
@@ -141,7 +141,7 @@ class Keyboards:
 
         if not list_page:
             return False
-        
+
         elif len(buttons) == 1:
             keyboards[f"playlist_{self.user_id}"].add(
                 buttons[0])
@@ -150,12 +150,12 @@ class Keyboards:
         elif len(buttons) == 2:
             keyboards[f"playlist_{self.user_id}"].add(
                 buttons[0], buttons[1])
-        
-        
+
+
         elif len(buttons) == 3:
             keyboards[f"playlist_{self.user_id}"].add(
                 buttons[0], buttons[1], buttons[2])
-        
+
         elif len(buttons) == 4:
             keyboards[f"playlist_{self.user_id}"].add(
                 buttons[0], buttons[1], buttons[2],
@@ -170,7 +170,7 @@ class Keyboards:
             keyboards[f"playlist_{self.user_id}"].add(
                 buttons[0], buttons[1], buttons[2],
                 buttons[3], buttons[4], buttons[5])
-        
+
         elif len(buttons) == 7:
             keyboards[f"playlist_{self.user_id}"].add(
                 buttons[0], buttons[1], buttons[2],
@@ -187,24 +187,24 @@ class Keyboards:
                 buttons[4], buttons[5], buttons[6], buttons[7])
 
         elif len(buttons) == 10:
-        
+
             keyboards[f"playlist_{self.user_id}"].add(
                 buttons[0], buttons[1], buttons[2], buttons[3],buttons[4],
                 buttons[5], buttons[6], buttons[7], buttons[8], buttons[9])
 
-            
+
         to_right = types.InlineKeyboardButton(text="➡️", callback_data=f"to_right_playlist")
         keyboards[f"playlist_{self.user_id}"].row(to_right)
         return keyboards[f"playlist_{self.user_id}"]
-    
+
     def select_lang(self):
         keyboards['lang_buttons'] = types.InlineKeyboardMarkup(row_width=3)
 
         ru_button = types.InlineKeyboardButton(text="Русский🇷🇺", callback_data=f"select_ru")
         en_button = types.InlineKeyboardButton(text="English🇬🇧", callback_data=f"select_en")
-        es_button = types.InlineKeyboardButton(text="España🇪🇸", callback_data=f"select_es")
+        es_button = types.InlineKeyboardButton(text="Español🇪🇸", callback_data=f"select_es")
 
-        keyboards['lang_buttons'].row(ru_button, en_button, es_button)
+        keyboards['lang_buttons'].row(es_button, ru_button, en_button)
 
         return keyboards['lang_buttons']
 
@@ -227,5 +227,3 @@ class Keyboards:
         keyboards['settings'].add(close)
 
         return keyboards['settings']
-
-
