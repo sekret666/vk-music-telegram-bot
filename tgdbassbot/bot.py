@@ -405,7 +405,7 @@ def update_users_read():
         for key in users.keys():
             try:
                 users[key] = users[int(key)]
-            except KeyError:
+            except Exception:
                 pass
         print(users)
 
