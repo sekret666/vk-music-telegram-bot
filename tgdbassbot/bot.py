@@ -16,15 +16,15 @@ users = {}
 
 @dp.message_handler(commands = ['start'])
 async def start_message(message: aiogram.types.Message):
-    if str(message.from_user.id) in users.keys():
+    if message.from_user.id in users.keys():
         start_message_lang = tgdbassbot.messages.start_messages[users[str(
             message.from_user.id)]['language']]
         await bot.send_message(message.chat.id, start_message_lang)
 
-    elif str(message.from_user.id) not in users.keys():
+    elif message.from_user.id not in users.keys():
         keyb = tgdbassbot.keyboards.Keyboards().select_lang()
         await bot.send_message(message.chat.id, "Выбери язык\nChoose a language\nElige un idioma", reply_markup = keyb)
-        users[str(message.from_user.id)] = {
+        users[message.from_user.id] = {
             "language": "",
             "show_bitrate": "On",
             "show_hearts": "On",
@@ -45,7 +45,7 @@ async def start_message(message: aiogram.types.Message):
 @dp.message_handler(commands = ['song'])
 async def search_by_song_title(message: aiogram.types.Message):
     await message.reply(
-        tgdbassbot.messages.song_messages[users[str(message.from_user.id)]['language']])
+        tgdbassbot.messages.song_messages[users[message.from_user.id]['language']])
 
 
 @dp.message_handler(
@@ -54,7 +54,7 @@ async def search_song(message: aiogram.types.Message):
     global number_page_message, you_in_first_page
 
     song_list, urls_list, without_formating = SongsDownloader(
-        f"{message.text}").get_songs_list(int(users[str(message.from_user.id)]['results_count']))
+        f"{message.text}").get_songs_list(int(users[message.from_user.id]['results_count']))
     you_in_first_page = tgdbassbot.messages.you_in_first_page_message[users[str(
         message.from_user.id)]['language']]
     number_page_message = tgdbassbot.messages.number_page_message[users[str(
@@ -62,25 +62,25 @@ async def search_song(message: aiogram.types.Message):
 
     if song_list == "NoSongs" and urls_list == "NoSongs":
         await bot.send_message(message.chat.id,
-                               tgdbassbot.messages.nothing_messages[users[str(message.from_user.id)]['language']])
+                               tgdbassbot.messages.nothing_messages[users[message.from_user.id]['language']])
     elif not song_list and not urls_list:
         pass
     else:
-        users[str(message.from_user.id)
+        users[message.from_user.id
         ]["without_formating"] = without_formating
         # Списки ссылок на песни
-        users[str(message.from_user.id)]["urls"] = urls_list
-        users[str(message.from_user.id)
+        users[message.from_user.id]["urls"] = urls_list
+        users[message.from_user.id
         ]["last_list"] = song_list  # Списки песен
-        users[str(message.from_user.id)]["last_page"] = 0  # Последняя страница
+        users[message.from_user.id]["last_page"] = 0  # Последняя страница
         # Последний список ссылок на песни
-        users[str(message.from_user.id)]["last_urls_page"] = "0"
-        list_len = len(users[str(message.from_user.id)]
+        users[message.from_user.id]["last_urls_page"] = "0"
+        list_len = len(users[message.from_user.id]
                        ["last_list"])  # Длинна списка
 
         keyb = tgdbassbot.keyboards.Keyboards().for_songs_list(urls_list[0],
                                                                message.chat.id,
-                                                               int(users[str(message.from_user.id)]["results_count"]))
+                                                               int(users[message.from_user.id]["results_count"]))
 
         await bot.send_message(message.chat.id, number_page_message.format("1",
                                                                            str(list_len)) + '\n'.join(song_list[0]),
@@ -89,48 +89,48 @@ async def search_song(message: aiogram.types.Message):
 
 @dp.callback_query_handler(lambda call: call.data in ("to_left", "close", "to_right"))
 async def change_page(call: aiogram.types.CallbackQuery):
-    user_lang = users[str(call.from_user.id)]['language']  # Язык пользователя
+    user_lang = users[call.from_user.id]['language']  # Язык пользователя
     # Последний список песен для пользователя
-    user_list_now = users[str(call.from_user.id)]["last_list"]
+    user_list_now = users[call.from_user.id]["last_list"]
     # Последний список ссылок на песни
-    user_link_list_now = users[str(call.from_user.id)]["urls"]
+    user_link_list_now = users[call.from_user.id]["urls"]
     # Последняя просмотренная страница
-    last_page = users[str(call.from_user.id)]["last_page"]
+    last_page = users[call.from_user.id]["last_page"]
     if call.data == "to_left":  # Листать влево
-        if users[str(call.from_user.id)]["last_page"] == 0:
+        if users[call.from_user.id]["last_page"] == 0:
             await bot.answer_callback_query(call.id,
                                             tgdbassbot.messages.you_in_first_page_message[
                                                 user_lang])  # Вы уже на первой странице
 
         else:
             keyb = tgdbassbot.keyboards.Keyboards().for_songs_list(
-                user_link_list_now[users[str(call.from_user.id)]["last_page"] - 1],
-                call.message.chat.id, int(users[str(call.from_user.id)]["results_count"]))
+                user_link_list_now[users[call.from_user.id]["last_page"] - 1],
+                call.message.chat.id, int(users[call.from_user.id]["results_count"]))
 
-            users[str(call.from_user.id)]["last_page"] -= 1
+            users[call.from_user.id]["last_page"] -= 1
             await bot.edit_message_text(chat_id = call.message.chat.id,
                                         text = tgdbassbot.messages.number_page_message[user_lang].format(
-                                            users[str(call.from_user.id)]["last_page"] + 1, len(user_list_now)) +
+                                            users[call.from_user.id]["last_page"] + 1, len(user_list_now)) +
                                                "\n".join(
-                                                   user_list_now[users[str(call.from_user.id)]["last_page"]]),
+                                                   user_list_now[users[call.from_user.id]["last_page"]]),
                                         message_id = call.message.message_id,
                                         reply_markup = keyb)
 
     elif call.data == "to_right":  # Листать вправо
-        if users[str(call.from_user.id)]["last_page"] == len(user_list_now) - 1:
+        if users[call.from_user.id]["last_page"] == len(user_list_now) - 1:
             await bot.answer_callback_query(call.id,
                                             tgdbassbot.messages.nothing_messages[user_lang])  # Ничего не нашлось
         else:
             keyb = tgdbassbot.keyboards.Keyboards().for_songs_list(
-                user_link_list_now[users[str(call.from_user.id)]["last_page"] + 1],
-                call.message.chat.id, int(users[str(call.from_user.id)]["results_count"]))
+                user_link_list_now[users[call.from_user.id]["last_page"] + 1],
+                call.message.chat.id, int(users[call.from_user.id]["results_count"]))
 
-            users[str(call.from_user.id)]["last_page"] += 1
+            users[call.from_user.id]["last_page"] += 1
             await bot.edit_message_text(chat_id = call.message.chat.id,
                                         text = tgdbassbot.messages.number_page_message[user_lang].format(
-                                            users[str(call.from_user.id)]["last_page"] + 1, len(user_list_now)) +
+                                            users[call.from_user.id]["last_page"] + 1, len(user_list_now)) +
                                                "\n".join(
-                                                   user_list_now[users[str(call.from_user.id)]["last_page"]]),
+                                                   user_list_now[users[call.from_user.id]["last_page"]]),
                                         message_id = call.message.message_id,
                                         reply_markup = keyb)
     elif call.data == "close":
@@ -142,18 +142,18 @@ async def change_page(call: aiogram.types.CallbackQuery):
 async def select_sound(call: aiogram.types.CallbackQuery):
     get_song_num = call.data.split('_')
     song_num = int(get_song_num[1]) - 1
-    page = users[str(call.from_user.id)]["last_page"]
-    name = users[str(call.from_user.id)
+    page = users[call.from_user.id]["last_page"]
+    name = users[call.from_user.id
     ]["without_formating"][page][song_num]["artist"]
-    song_name = users[str(call.from_user.id)
+    song_name = users[call.from_user.id
     ]["without_formating"][page][song_num]["title"]
 
     song = SongsDownloader().download_song(
-        users[str(call.from_user.id)]["urls"][page][song_num])
-    duration = users[str(call.from_user.id)
+        users[call.from_user.id]["urls"][page][song_num])
+    duration = users[call.from_user.id
     ]["without_formating"][page][song_num]["duration"]
     keyb = tgdbassbot.keyboards.Keyboards().like_unlike_keyboard(
-        users[str(call.from_user.id)]["hearts_buttons"])
+        users[call.from_user.id]["hearts_buttons"])
     msg = await bot.send_audio(call.message.chat.id, audio = song, title = f"{name} - {song_name}",
                                performer = song_name,
                                caption = '<a href="https://t.me/TelegaMusicBot">🎧TelegaMusicBot</a>', reply_markup = keyb)
@@ -161,35 +161,45 @@ async def select_sound(call: aiogram.types.CallbackQuery):
 
 @dp.callback_query_handler(lambda call: call.data in ["like", "unlike"])
 async def like_or_unlike(call: aiogram.types.CallbackQuery):
-    user_lang = users[str(call.from_user.id)]['language']
+    user_lang = users[call.from_user.id]['language']
 
     if call.data == "like":
-        users[str(call.from_user.id)]["favourites_list"].append(
+        users[call.from_user.id]["favourites_list"].append(
             {call.message.audio.title: call.message.audio.file_id})
+        users[call.from_user.id]["last_list"] = ""
+        users[call.from_user.id]["last_urls_list"] = ""
+        users[call.from_user.id]["urls"] = ""
+        users[call.from_user.id]["without_formating"] = ""
         update_users_write()
         await bot.answer_callback_query(call.id, tgdbassbot.messages.add_to_favourite[user_lang])
     elif call.data == "unlike":
 
-        for item in users[str(call.from_user.id)]["favourites_list"]:
+        for item in users[call.from_user.id]["favourites_list"]:
             for key in item.keys():
                 if key == call.message.audio.title:
-                    song = users[str(call.from_user.id)
+                    song = users[call.from_user.id
                     ]["favourites_list"].index(item)
-                    del users[str(call.from_user.id)]["favourites_list"][song]
+                    del users[call.from_user.id]["favourites_list"][song]
         await bot.answer_callback_query(call.id, tgdbassbot.messages.del_from_favourite[user_lang])
-
+        users[call.from_user.id]["last_list"] = ""
+        users[call.from_user.id]["last_urls_list"] = ""
+        users[call.from_user.id]["urls"] = ""
+        users[call.from_user.id]["without_formating"] = ""
         update_users_write()
 
 
 @dp.callback_query_handler(lambda call: call.data in ["select_ru", "select_en", "select_es"])
 async def select_lang(call: aiogram.types.CallbackQuery):
     if call.data == "select_ru":
-        users[str(call.from_user.id)]['language'] = "RU"
+        users[call.from_user.id]['language'] = "RU"
     if call.data == "select_en":
-        users[str(call.from_user.id)]['language'] = "EN"
+        users[call.from_user.id]['language'] = "EN"
     if call.data == "select_es":
-        users[str(call.from_user.id)]['language'] = "ES"
-
+        users[call.from_user.id]['language'] = "ES"
+    users[call.from_user.id]["last_list"] = ""
+    users[call.from_user.id]["last_urls_list"] = ""
+    users[call.from_user.id]["urls"] = ""
+    users[call.from_user.id]["without_formating"] = ""
     update_users_write()
     start_message_lang = tgdbassbot.messages.start_messages[users[str(
         call.from_user.id)]['language']]
@@ -200,7 +210,7 @@ async def select_lang(call: aiogram.types.CallbackQuery):
 async def search_for_artist_name(message: aiogram.types.Message):
     """Искать по артисту"""
     await message.reply(
-        tgdbassbot.messages.artist_messages[users[str(message.from_user.id)]['language']])
+        tgdbassbot.messages.artist_messages[users[message.from_user.id]['language']])
 
 
 @dp.message_handler(commands = ['setlang'])
@@ -215,34 +225,34 @@ async def change_language(message: aiogram.types.Message):
 async def change_settings(message: aiogram.types.Message):
     """Меню настроек"""
 
-    setting_keyb = tgdbassbot.keyboards.Keyboards().settings(users[str(message.from_user.id)]['language'],
-                                                             users[str(message.from_user.id)
+    setting_keyb = tgdbassbot.keyboards.Keyboards().settings(users[message.from_user.id]['language'],
+                                                             users[message.from_user.id
                                                              ]['results_count'],
-                                                             users[str(message.from_user.id)]['hearts_buttons'])
+                                                             users[message.from_user.id]['hearts_buttons'])
 
     await bot.send_message(message.chat.id,
-                           tgdbassbot.messages.settings_menu[users[str(message.from_user.id)]['language']],
+                           tgdbassbot.messages.settings_menu[users[message.from_user.id]['language']],
                            reply_markup = setting_keyb)
 
 
 @dp.message_handler(commands = ['my'])
 async def user_playlist(message: aiogram.types.Message):
-    user_lang = users[str(message.from_user.id)]['language']
-    playlist = users[str(message.from_user.id)]['favourites_list']
-    users[str(message.from_user.id)]["playlist_page"] = 0
+    user_lang = users[message.from_user.id]['language']
+    playlist = users[message.from_user.id]['favourites_list']
+    users[message.from_user.id]["playlist_page"] = 0
 
     if not playlist:
         await bot.send_message(message.chat.id, tgdbassbot.messages.no_playlist[user_lang])
 
     else:
-        users[str(message.from_user.id)]["playlist_page"] = 0
-        f = lambda A, n=int(users[str(message.from_user.id)]['results_count']): [
+        users[message.from_user.id]["playlist_page"] = 0
+        f = lambda A, n=int(users[message.from_user.id]['results_count']): [
             A[i:i + n] for i in range(0, len(A), n)]
         cut_playlist = f(playlist)
 
         keyb = tgdbassbot.keyboards.Keyboards().for_user_playlist(
-            cut_playlist[users[str(message.from_user.id)]["playlist_page"]],
-            message.chat.id, int(users[str(message.from_user.id)]["results_count"]))
+            cut_playlist[users[message.from_user.id]["playlist_page"]],
+            message.chat.id, int(users[message.from_user.id]["results_count"]))
         user_playlist = []
         i = 1
         for item in cut_playlist[0]:
@@ -255,23 +265,23 @@ async def user_playlist(message: aiogram.types.Message):
 
 @dp.callback_query_handler(lambda call: call.data == "to_right_playlist")
 async def to_right_user_playlisy(call: aiogram.types.CallbackQuery):
-    playlist = users[str(call.from_user.id)]['favourites_list']
-    playlist_page = users[str(call.from_user.id)]["playlist_page"]
-    user_lang = users[str(call.from_user.id)]['language']
+    playlist = users[call.from_user.id]['favourites_list']
+    playlist_page = users[call.from_user.id]["playlist_page"]
+    user_lang = users[call.from_user.id]['language']
     try:
 
         if len(playlist) > 1 and playlist_page != len(playlist) - 1:
-            users[str(call.from_user.id)]["playlist_page"] += 1
-            f = lambda A, n=int(users[str(call.from_user.id)]['results_count']): [
+            users[call.from_user.id]["playlist_page"] += 1
+            f = lambda A, n=int(users[call.from_user.id]['results_count']): [
                 A[i:i + n] for i in range(0, len(A), n)]
             cut_playlist = f(playlist)
             keyb = tgdbassbot.keyboards.Keyboards().for_user_playlist(
-                playlist[users[str(call.from_user.id)]["playlist_page"]],
-                call.message.chat.id, int(users[str(call.from_user.id)]["results_count"]))
+                playlist[users[call.from_user.id]["playlist_page"]],
+                call.message.chat.id, int(users[call.from_user.id]["results_count"]))
             user_playlist = []
             i = 1
 
-            for item in cut_playlist[users[str(call.from_user.id)]["playlist_page"]]:
+            for item in cut_playlist[users[call.from_user.id]["playlist_page"]]:
                 for key, val in item.items():
                     user_playlist.append(f"{i}. {key}")
                     i += 1
@@ -295,17 +305,22 @@ async def settings_menu_changer(call: aiogram.types.CallbackQuery):
         await bot.send_message(call.message.chat.id, "Выбери язык\nChoose a language\nElige un idioma",
                                reply_markup = keyb)
     elif call.data == "count_result":
-        if users[str(call.from_user.id)]["results_count"] == "10":
-            users[str(call.from_user.id)]["results_count"] = "6"
-        elif users[str(call.from_user.id)]["results_count"] == "6":
-            users[str(call.from_user.id)]["results_count"] = "8"
-        elif users[str(call.from_user.id)]["results_count"] == "8":
-            users[str(call.from_user.id)]["results_count"] = "10"
+        if users[call.from_user.id]["results_count"] == "10":
+            users[call.from_user.id]["results_count"] = "6"
+        elif users[call.from_user.id]["results_count"] == "6":
+            users[call.from_user.id]["results_count"] = "8"
+        elif users[call.from_user.id]["results_count"] == "8":
+            users[call.from_user.id]["results_count"] = "10"
 
-        setting_keyb = tgdbassbot.keyboards.Keyboards().settings(users[str(call.from_user.id)]['language'],
-                                                                 users[str(call.from_user.id)
+        setting_keyb = tgdbassbot.keyboards.Keyboards().settings(users[call.from_user.id]['language'],
+                                                                 users[call.from_user.id
                                                                  ]['results_count'],
-                                                                 users[str(call.from_user.id)]['hearts_buttons'])
+                                                             users[call.from_user.id]['hearts_buttons'])
+        users[call.from_user.id]["last_list"] = ""
+        users[call.from_user.id]["last_urls_list"] = ""
+        users[call.from_user.id]["urls"] = ""
+        users[call.from_user.id]["without_formating"] = ""
+        
         update_users_write()
         await bot.edit_message_text(chat_id = call.message.chat.id,
                                     text = tgdbassbot.messages.settings_menu[users[str(
@@ -313,15 +328,19 @@ async def settings_menu_changer(call: aiogram.types.CallbackQuery):
                                     message_id = call.message.message_id,
                                     reply_markup = setting_keyb)
     elif call.data == "heart_buttons":
-        if users[str(call.from_user.id)]["hearts_buttons"] == "On":
-            users[str(call.from_user.id)]["hearts_buttons"] = "Off"
-        elif users[str(call.from_user.id)]["hearts_buttons"] == "Off":
-            users[str(call.from_user.id)]["hearts_buttons"] = "On"
+        if users[call.from_user.id]["hearts_buttons"] == "On":
+            users[call.from_user.id]["hearts_buttons"] = "Off"
+        elif users[call.from_user.id]["hearts_buttons"] == "Off":
+            users[call.from_user.id]["hearts_buttons"] = "On"
 
-        setting_keyb = tgdbassbot.keyboards.Keyboards().settings(users[str(call.from_user.id)]['language'],
-                                                                 users[str(call.from_user.id)
+        setting_keyb = tgdbassbot.keyboards.Keyboards().settings(users[call.from_user.id]['language'],
+                                                                 users[call.from_user.id
                                                                  ]['results_count'],
-                                                                 users[str(call.from_user.id)]['hearts_buttons'])
+                                                                 users[call.from_user.id]['hearts_buttons'])
+        users[call.from_user.id]["last_list"] = ""
+        users[call.from_user.id]["last_urls_list"] = ""
+        users[call.from_user.id]["urls"] = ""
+        users[call.from_user.id]["without_formating"] = ""
 
         update_users_write()
         await bot.edit_message_text(chat_id = call.message.chat.id,
@@ -356,15 +375,15 @@ async def howusers(message: aiogram.types.Message):
 @dp.callback_query_handler(lambda call: call.data.startswith("playlist"))
 async def select_sound(call: aiogram.types.CallbackQuery):
     get_song_num = call.data.split('_')
-    playlist = users[str(call.from_user.id)]['favourites_list']
+    playlist = users[call.from_user.id]['favourites_list']
     song_num = int(get_song_num[1]) - 1
-    page = users[str(call.from_user.id)]["playlist_page"]
+    page = users[call.from_user.id]["playlist_page"]
 
-    f = lambda A, n=int(users[str(call.from_user.id)]['results_count']): [
+    f = lambda A, n=int(users[call.from_user.id]['results_count']): [
         A[i:i + n] for i in range(0, len(A), n)]
     cut_playlist = f(playlist)
     keyb = tgdbassbot.keyboards.Keyboards().like_unlike_keyboard(
-        users[str(call.from_user.id)]["hearts_buttons"])
+        users[call.from_user.id]["hearts_buttons"])
     for val in cut_playlist[page][song_num].values():
         await bot.send_audio(call.message.chat.id, audio = val,
                              caption = '<a href="https://t.me/TelegaMusicBot">🎧TelegaMusicBot</a>', reply_markup = keyb)
@@ -373,6 +392,7 @@ async def select_sound(call: aiogram.types.CallbackQuery):
 def update_users_write():
     with open('./data/users.json', 'w', encoding = 'UTF-8') as write_users:
         json.dump(users, write_users, ensure_ascii = False, indent = 4)
+        
 
 
 
@@ -382,6 +402,9 @@ def update_users_read():
     global users
     with open("./data/users.json", 'r', encoding = 'UTF-8') as read_users:
         users = json.load(read_users)
+        for key in users.keys():
+            users[key] = users[int(key)]
+        print(users)
 
 
 if __name__ == "__main__":
