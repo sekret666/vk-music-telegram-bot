@@ -403,7 +403,10 @@ def update_users_read():
     with open("./data/users.json", 'r', encoding = 'UTF-8') as read_users:
         users = json.load(read_users)
         for key in users.keys():
-            users[key] = users[int(key)]
+            try:
+                users[key] = users[int(key)]
+            except KeyError:
+                pass
         print(users)
 
 
