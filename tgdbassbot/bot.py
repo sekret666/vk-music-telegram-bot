@@ -156,7 +156,7 @@ async def select_sound(call: aiogram.types.CallbackQuery):
         users[str(call.from_user.id)]["hearts_buttons"])
     msg = await bot.send_audio(call.message.chat.id, audio = song, title = f"{name} - {song_name}",
                                performer = song_name,
-                               caption = '<a href="https://t.me/dbas_music_bot">🎧DBAS Music</a>', reply_markup = keyb)
+                               caption = '<a href="https://t.me/TelegaMusicBot">🎧TelegaMusicBot</a>', reply_markup = keyb)
 
 
 @dp.callback_query_handler(lambda call: call.data in ["like", "unlike"])
@@ -367,7 +367,7 @@ async def select_sound(call: aiogram.types.CallbackQuery):
         users[str(call.from_user.id)]["hearts_buttons"])
     for val in cut_playlist[page][song_num].values():
         await bot.send_audio(call.message.chat.id, audio = val,
-                             caption = '<a href="https://t.me/dbas_music_bot">🎧DBAS Music</a>', reply_markup = keyb)
+                             caption = '<a href="https://t.me/TelegaMusicBot">🎧TelegaMusicBot</a>', reply_markup = keyb)
 
 
 def update_users_write():
