@@ -17,8 +17,7 @@ users = {}
 @dp.message_handler(commands = ['start'])
 async def start_message(message: aiogram.types.Message):
     if message.from_user.id in users.keys():
-        start_message_lang = tgdbassbot.messages.start_messages[users[str(
-            message.from_user.id)]['language']]
+        start_message_lang = tgdbassbot.messages.start_messages[users[message.from_user.id]['language']]
         await bot.send_message(message.chat.id, start_message_lang)
 
     elif message.from_user.id not in users.keys():
