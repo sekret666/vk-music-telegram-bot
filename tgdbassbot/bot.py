@@ -401,9 +401,10 @@ def update_users_read():
     global users
     with open("./data/users.json", 'r') as read_users:
         users = json.load(read_users)
+        temp_dict = {}
         for key in users.keys():
-            
-            users[key] = int(users.pop(key))
+            print(key)
+           
         
         import pprint; pprint.pprint(users)
 
