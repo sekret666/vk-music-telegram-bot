@@ -402,8 +402,8 @@ def update_users_read():
     with open("./data/users.json", 'r') as read_users:
         users = json.load(read_users)
         for key in users.keys():
-            k = users[key]
-            users[key] = int(k)
+            
+            users[key] = int(key)
         
         import pprint; pprint.pprint(users)
 
