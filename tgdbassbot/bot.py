@@ -17,7 +17,8 @@ users = {}
 @dp.message_handler(commands = ['start'])
 async def start_message(message: aiogram.types.Message):
     if message.from_user.id in users.keys():
-        start_message_lang = tgdbassbot.messages.start_messages[users[message.from_user.id]['language']]
+        start_message_lang = tgdbassbot.messages.start_messages[users[
+            message.from_user.id]['language']]
         await bot.send_message(message.chat.id, start_message_lang)
 
     elif message.from_user.id not in users.keys():
@@ -54,10 +55,10 @@ async def search_song(message: aiogram.types.Message):
 
     song_list, urls_list, without_formating = SongsDownloader(
         f"{message.text}").get_songs_list(int(users[message.from_user.id]['results_count']))
-    you_in_first_page = tgdbassbot.messages.you_in_first_page_message[users[str(
-        message.from_user.id)]['language']]
-    number_page_message = tgdbassbot.messages.number_page_message[users[str(
-        message.from_user.id)]['language']]
+    you_in_first_page = tgdbassbot.messages.you_in_first_page_message[users[
+        message.from_user.id]['language']]
+    number_page_message = tgdbassbot.messages.number_page_message[users[
+        message.from_user.id]['language']]
 
     if song_list == "NoSongs" and urls_list == "NoSongs":
         await bot.send_message(message.chat.id,
@@ -200,8 +201,8 @@ async def select_lang(call: aiogram.types.CallbackQuery):
     users[call.from_user.id]["urls"] = ""
     users[call.from_user.id]["without_formating"] = ""
     update_users_write()
-    start_message_lang = tgdbassbot.messages.start_messages[users[str(
-        call.from_user.id)]['language']]
+    start_message_lang = tgdbassbot.messages.start_messages[users[
+        call.from_user.id]['language']]
     await bot.send_message(call.message.chat.id, start_message_lang)
 
 
@@ -322,8 +323,8 @@ async def settings_menu_changer(call: aiogram.types.CallbackQuery):
         
         update_users_write()
         await bot.edit_message_text(chat_id = call.message.chat.id,
-                                    text = tgdbassbot.messages.settings_menu[users[str(
-                                        call.from_user.id)]['language']],
+                                    text = tgdbassbot.messages.settings_menu[users[
+                                        call.from_user.id]['language']],
                                     message_id = call.message.message_id,
                                     reply_markup = setting_keyb)
     elif call.data == "heart_buttons":
@@ -343,8 +344,8 @@ async def settings_menu_changer(call: aiogram.types.CallbackQuery):
 
         update_users_write()
         await bot.edit_message_text(chat_id = call.message.chat.id,
-                                    text = tgdbassbot.messages.settings_menu[users[str(
-                                        call.from_user.id)]['language']],
+                                    text = tgdbassbot.messages.settings_menu[users[
+                                        call.from_user.id]['language']],
                                     message_id = call.message.message_id,
                                     reply_markup = setting_keyb)
 
@@ -367,7 +368,6 @@ async def malling(message: aiogram.types.Message):
 
 @dp.message_handler(commands = ['users'])
 async def howusers(message: aiogram.types.Message):
-    update_users_read()
     await bot.send_message(message.chat.id, f"<em>Кол-во пользователей</em>\n\n<b>{len(users)}</b> пользователей")
 
 
@@ -402,13 +402,14 @@ def update_users_read():
     with open("./data/users.json", 'r', encoding = 'UTF-8') as read_users:
         users = json.load(read_users)
         for key in users.keys():
-            try:
-                users[key] = users[int(key)]
-            except Exception:
-                pass
-        print(users)
+            users[key] = users[int(key)]
+        
+        import pprint; pprint.pprint(users)
 
 
 if __name__ == "__main__":
     update_users_read()
-    aiogram.executor.start_polling(dp, skip_updates = True)
+    try:
+        aiogram.executor.start_polling(dp, skip_updates = True)
+    except exceptions:
+        pass
