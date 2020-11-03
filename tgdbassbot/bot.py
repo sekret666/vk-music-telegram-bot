@@ -403,8 +403,13 @@ def update_users_read():
         users = json.load(read_users)
         temp_dict = {}
         for key, val in users.items():
-            print(key)
-           
+            for k,v in key.items():
+                temp_dict[int(k)] = key[k]
+        
+        users = temp_dict
+        temp_dict = {}
+        
+
         
         import pprint; pprint.pprint(users)
 
