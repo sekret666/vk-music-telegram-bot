@@ -402,7 +402,7 @@ def update_users_read():
     with open("./data/users.json", 'r') as read_users:
         users = json.load(read_users)
         temp_dict = {}
-        for key in users.keys():
+        for key, val in users.items():
             print(key)
            
         
