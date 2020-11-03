@@ -403,7 +403,7 @@ def update_users_read():
         users = json.load(read_users)
         for key in users.keys():
             
-            users[key] = users.pop(int(key))
+            users[key] = int(users.pop(key))
         
         import pprint; pprint.pprint(users)
 
