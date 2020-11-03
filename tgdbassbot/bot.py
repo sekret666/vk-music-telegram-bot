@@ -389,7 +389,7 @@ async def select_sound(call: aiogram.types.CallbackQuery):
 
 
 def update_users_write():
-    with open('./data/users.json', 'w', encoding = 'UTF-8') as write_users:
+    with open('./data/users.json', 'w') as write_users:
         json.dump(users, write_users, ensure_ascii = False, indent = 4)
         
 
@@ -399,7 +399,7 @@ def update_users_write():
 
 def update_users_read():
     global users
-    with open("./data/users.json", 'r', encoding = 'UTF-8') as read_users:
+    with open("./data/users.json", 'r') as read_users:
         users = json.load(read_users)
         for key in users.keys():
             k = users[key]
