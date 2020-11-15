@@ -415,7 +415,5 @@ def update_users_read():
 
 if __name__ == "__main__":
     update_users_read()
-    try:
-        aiogram.executor.start_polling(dp, skip_updates = True)
-    except aiogram.exceptions:
-        pass
+    
+    aiogram.executor.start_polling(dp, skip_updates = True)
