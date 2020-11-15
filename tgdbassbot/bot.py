@@ -60,7 +60,7 @@ async def search_song(message: aiogram.types.Message):
     number_page_message = tgdbassbot.messages.number_page_message[users[
         message.from_user.id]['language']]
 
-    if song_list == "NoSongs" and urls_list == "NoSongs":
+    if song_list == False:
         await bot.send_message(message.chat.id,
                                tgdbassbot.messages.nothing_messages[users[message.from_user.id]['language']])
     elif not song_list and not urls_list:
