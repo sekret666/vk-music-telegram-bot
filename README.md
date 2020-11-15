@@ -1,4 +1,4 @@
-Telegram chat-bot <a href = "https://t.me/DBAS_music_bot">🎧DBAS Music</a>
+Telegram chat-bot <a href = "https://t.me/muslibbot">🎧Mus Lib</a>
 ===============================================
 
 Telegram chat-bot
