@@ -1,4 +1,4 @@
-API_TOKEN = "1181662488:AAFXTz5zYeLCqMrlSEgeS0VUOKFX-hlGv2c"
+API_TOKEN = "1436326367:AAGtFA5j2MLMgMvB1OmSTOmrK8ZyMrLrCfg"
 
 commands = ['/start', '/song', '/artist', '/setlang',
             '/settings', '/my', '/users', '/newpost']
