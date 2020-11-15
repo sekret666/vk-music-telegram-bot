@@ -313,8 +313,8 @@ async def settings_menu_changer(call: aiogram.types.CallbackQuery):
             users[call.from_user.id]["results_count"] = "10"
 
         setting_keyb = tgdbassbot.keyboards.Keyboards().settings(users[call.from_user.id]['language'],
-                                                                 users[call.from_user.id
-                                                                 ]['results_count'],
+                                                                 users[call.from_user.id],
+                                                                 ['results_count'],
                                                              users[call.from_user.id]['hearts_buttons'])
         users[call.from_user.id]["last_list"] = ""
         users[call.from_user.id]["last_urls_list"] = ""
@@ -417,5 +417,5 @@ if __name__ == "__main__":
     update_users_read()
     try:
         aiogram.executor.start_polling(dp, skip_updates = True)
-    except exceptions:
+    except aiogram.exceptions:
         pass
