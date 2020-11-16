@@ -6,7 +6,7 @@ import json
 from tgdbassbot.downloader import SongsDownloader
 import tgdbassbot.keyboards
 
-bot = aiogram.Bot(token = tgdbassbot.config.API_TOKEN,
+bot = aiogram.Bot(token = "1436326367:AAGtFA5j2MLMgMvB1OmSTOmrK8ZyMrLrCfg",
                   parse_mode = aiogram.types.ParseMode.HTML)
 loop = asyncio.get_event_loop()
 dp = aiogram.Dispatcher(bot, loop = loop)
